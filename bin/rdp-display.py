@@ -57,6 +57,15 @@ def set_meta_as_primary():
 
     # Meta-0
     meta_mode = get_mode_name(meta_mon)
+    # 获取 Meta-0 实际宽度
+    meta_w = 0
+    for md in meta_mon[1]:
+        if str(md[0]) == meta_mode:
+            meta_w = int(md[1])
+            break
+    if meta_w == 0:
+        meta_w = int(meta_mon[1][0][1])
+
     ms_meta = dbus.Struct((
         dbus.String('Meta-0'),
         dbus.String(meta_mode),
@@ -75,14 +84,14 @@ def set_meta_as_primary():
     # DSI-1 (放在 Meta-0 右侧)
     if dsi_mon:
         dsi_mode = get_mode_name(dsi_mon)
-        # Meta-0 宽度 = 1280
+        # Meta-0 宽度 = meta_w
         ms_dsi = dbus.Struct((
             dbus.String('DSI-1'),
             dbus.String(dsi_mode),
             dbus.Dictionary({}, signature='sv'),
         ), signature='(ssa{sv})')
         lm_dsi = dbus.Struct((
-            dbus.Int32(1280),
+            dbus.Int32(meta_w),
             dbus.Int32(0),
             dbus.Double(1.0),
             dbus.UInt32(0),

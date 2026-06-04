@@ -88,6 +88,13 @@ cp config/rdp-display.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now rdp-display.service
 
+# GNOME Remote Desktop headless 模式（避免钥匙圈弹窗）
+mkdir -p ~/.config/systemd/user/gnome-remote-desktop.service.d
+cp config/gnome-remote-desktop-headless.conf \
+  ~/.config/systemd/user/gnome-remote-desktop.service.d/override.conf
+systemctl --user daemon-reload
+systemctl --user restart gnome-remote-desktop
+
 # 构建 ROS Docker 镜像（可选）
 sudo docker build -t ros-noetic-desktop docker/
 ```
@@ -110,7 +117,8 @@ rk3588-ubuntu24.04-arm64-wayland-tools/
 │   ├── rdp-display.py      # RDP 主屏切换
 │   └── ros.sh              # ROS Docker 入口
 ├── config/
-│   └── rdp-display.service # systemd 用户服务
+│   ├── rdp-display.service     # RDP 主屏切换 systemd 服务
+│   └── gnome-remote-desktop-headless.conf  # GNOME RDP headless 覆盖配置
 └── docker/
     └── Dockerfile          # ROS Noetic 桌面版
 ```
